@@ -1,8 +1,8 @@
 const animalSort = animals => {
-  return animals.sort(function(object, nextObject){
-    return (object.numberOfLegs !== nextObject.numberOfLegs) ? 
-                      (object.numberOfLegs - nextObject.numberOfLegs) : (object.name.charCodeAt(0) - nextObject.name.charCodeAt(0));
-  })
+  return animals.sort(function(animal1, animal2){
+    return (animal1.numberOfLegs !== animal2.numberOfLegs) ? 
+                      (animal1.numberOfLegs - animal2.numberOfLegs) : (animal1.name.localeCompare(animal2.name));
+  });
 };
 
 export { animalSort };
