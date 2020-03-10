@@ -1,21 +1,21 @@
 
 function duplicateLetters(str) {
-  var map = {};
+  var letterFrequency = {};
   var maxOccurance = 0;
 
   for(var i=0;i<str.length;i++){
-    if(map[str[i]])
-    map[str[i]]++;
+    if(letterFrequency[str[i]])
+    letterFrequency[str[i]]++;
     else{
-      map[str[i]] = 1;
+      letterFrequency[str[i]] = 1;
     }
   }
 
-  if(Object.keys(map).length == str.length) 
+  if(Object.keys(letterFrequency).length === str.length) 
     return false;
 
-  for(let key in map){
-    maxOccurance = Math.max(maxOccurance,map[key])
+  for(let key in letterFrequency){
+    maxOccurance = Math.max(maxOccurance,letterFrequency[key])
   }
 
   return maxOccurance;
