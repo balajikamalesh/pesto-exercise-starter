@@ -32,13 +32,25 @@ function sumOfInterests() {
                                                            || balance.state === 'OH'
                                                            || balance.state === 'GA'
                                                            || balance.state === 'DE');
-  const result = filteredBankBalances.map((balance) => 0.18 * balance.amount).reduce(add, 0);
-  return result.toFixed(2);
+  const result = filteredBankBalances.map((balance) => Math.round(0.189 * Number(balance.amount) * 100) / 100).reduce(add, 0);
+  return Math.round(result * 100) / 100;
 }
 
 function higherStateSums() {
-  const filteredArray = bankBalances.filter((balance) => Number(balance.amount) > 1000000);
-  return filteredArray.map((balance) => balance.amount).reduce(add, 0);
+  var result = [];
+  bankBalances.reduce(function(res, value) {
+    if (!res[value.state]) {
+      res[value.state] = { state: value.state, amount: 0 };
+      result.push(res[value.state])
+    }
+    res[value.state].amount += Number(value.amount);
+    return res;
+  }, {});
+
+  var moreThanMillionStates = result.filter(function(balance) { return balance.amount > 1000000;})
+                                    .map(function(balance){ return balance.amount});
+
+  return moreThanMillionStates.reduce(add, 0);
 }
 
 export {
