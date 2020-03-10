@@ -1,9 +1,12 @@
 function cacheFunction(callback) {
-  let functionArgumentsMap = {};
+  let resultCache = {};
   return function(...args){
-    if(!functionArgumentsMap[args[0]]){
-      functionArgumentsMap[args[0]] = true;
-      return callback(...args);
+  let argumentsKey = args.join(',');
+    if(argumentsKey in resultCache){
+      return resultCache[argumentsKey];
+    } else {
+      resultCache[argumentsKey] = callback(args);
+      return resultCache[argumentsKey];
     }
   }
 }
