@@ -16,5 +16,17 @@ describe('Alphabetic Shift Test Cases', () => {
 
     expect(alphabeticShift('supercalifragilisticexpialidocious'))
       .toEqual('tvqfsdbmjgsbhjmjtujdfyqjbmjepdjpvt');
+
+    expect(alphabeticShift('supercalifragzlisticexpialidocious'))
+      .toEqual('tvqfsdbmjgsbhamjtujdfyqjbmjepdjpvt');
+
+    expect(alphabeticShift('AntidisestZblishmentarianism'))
+      .toEqual('BoujejtftuAcmjtinfoubsjbojtn');
+  });
+
+  it('throw cases', () => {
+    expect(() => { alphabeticShift({}) }).toThrow();
+    expect(() => { alphabeticShift(true) }).toThrow();
+    expect(() => { alphabeticShift([null, false]) }).toThrow();
   });
 });
