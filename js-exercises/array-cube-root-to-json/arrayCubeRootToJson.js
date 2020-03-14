@@ -6,7 +6,7 @@ const arrayCubeRootToJson = arr => {
   arr = castArrayToNumberType(arr);
 
   if (Array.isArray(arr) && (arr.filter(Boolean).length !== arr.length)) {
-    throw Error('Input should be an array');
+    throw Error('Array has invalid entries');
   }
 
   var result = {};
