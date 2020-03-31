@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import Grocerylist from './components/grocerylist';
 import './App.css';
 
@@ -21,15 +20,17 @@ class App extends React.Component {
 
   addItem(){
     let currentItems = this.state.groceryItems;
-    if(currentItems.some((item) => item.name.toLowerCase() === this.state.newItem.toLowerCase())){
-        currentItems.forEach((item) => {
-          if(item.name.toLowerCase() === this.state.newItem.toLowerCase())
-            item.quantity += 1;
-        })
-    } else {
-      currentItems.push({name: this.state.newItem, quantity: 1})
-    }
-    this.setState({groceryItems: currentItems}); 
+    if(this.state.newItem !== ''){
+        if(currentItems.some((item) => item.name.toLowerCase() === this.state.newItem.toLowerCase())){
+            currentItems.forEach((item) => {
+              if(item.name.toLowerCase() === this.state.newItem.toLowerCase())
+                item.quantity += 1;
+            })
+        } else {
+          currentItems.push({name: this.state.newItem, quantity: 1})
+        }
+        this.setState({groceryItems: currentItems});
+    } 
   }
 
   clearList(){
@@ -49,10 +50,26 @@ class App extends React.Component {
       fontSize: '16px'
    }
 
+   const center = {
+     margin: '2% auto',
+     textAlign: 'center',
+     width: '50%'
+   }
+
+   const inputStyle = {
+      width: '100%',
+      padding: '12px 20px',
+      margin: '8px 0',
+      display: 'inline-block',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      boxSizing: 'border-box'
+   }
+
   return (
-    <div>
-      <h1>Grocery List Items</h1>
-      <input type='text' onChange={event => this.setNewItem(event.target.value)} />
+    <div style={center}>
+      <h1>Grocery List Items 🛍️</h1>
+      <input style={inputStyle} type='text' onChange={event => this.setNewItem(event.target.value) } />
       <button style={buttonStyle} type='submit' onClick={this.addItem}>Add</button>
       <button style={buttonStyle} onClick={this.clearList}>Clear</button>
       <Grocerylist list={this.state.groceryItems} />
