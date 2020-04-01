@@ -1,14 +1,6 @@
 import React from 'react';
 
-class Grocerylist extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: this.props.list
-    }
-  }
-	
+class Grocerylist extends React.Component {	
   render(){
     let listStyle = {
       height: '50px',
@@ -22,10 +14,11 @@ class Grocerylist extends React.Component {
     };
 
     return (
-      <div>{this.state.list.map(function (item) {
+      <div>{this.props.list.map(function (item) {
         return <h2 style={listStyle} onMouseEnter={(event) => event.target.style.transform = 'scale(1.03)'}
                                      onMouseLeave={(event) => event.target.style.transform = 'scale(1)'}
-         onClick={(event) => event.target.style.backgroundColor === 'green' ? event.target.style.backgroundColor = 'red' : event.target.style.backgroundColor = 'black' }> 
+         onClick={(event) => event.target.style.backgroundColor === 'green' ? event.target.style.backgroundColor = 'red' : event.target.style.backgroundColor = 'black' }
+                    data-tooltip={item.name}> 
                       {item.name} {item.quantity > 1 ? ' -   ' + item.quantity : ''}</h2>
       })}</div>
     );

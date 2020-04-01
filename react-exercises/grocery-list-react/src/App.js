@@ -6,7 +6,7 @@ class App extends React.Component {
 	constructor(){
 		super()
 		this.state = {
-      groceryItems: [{name:"Quaker Oats",quantity: 1},{name:"Magiee",quantity: 1},{name:"Biscuit",quantity: 1}],
+      groceryItems: [{name:"Quaker Oats",quantity: 2},{name:"Garam Masala",quantity: 1},{name:"Rice bran oil",quantity: 1}],
       newItem: ''
     }
     this.addItem = this.addItem.bind(this);
@@ -68,7 +68,7 @@ class App extends React.Component {
 
   return (
     <div style={center}>
-      <h1>Grocery List Items 🛍️</h1>
+      <h1>Grocery List <span role="img">🛍️</span></h1>
       <input style={inputStyle} type='text' onChange={event => this.setNewItem(event.target.value) } />
       <button style={buttonStyle} type='submit' onClick={this.addItem}>Add</button>
       <button style={buttonStyle} onClick={this.clearList}>Clear</button>
