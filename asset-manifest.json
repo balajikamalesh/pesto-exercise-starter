@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/pesto-exercise-starter/static/css/main.29fdddb7.chunk.css",
+    "main.js": "/pesto-exercise-starter/static/js/main.6876d9c4.chunk.js",
+    "main.js.map": "/pesto-exercise-starter/static/js/main.6876d9c4.chunk.js.map",
+    "runtime-main.js": "/pesto-exercise-starter/static/js/runtime-main.38210067.js",
+    "runtime-main.js.map": "/pesto-exercise-starter/static/js/runtime-main.38210067.js.map",
+    "static/js/2.756b725d.chunk.js": "/pesto-exercise-starter/static/js/2.756b725d.chunk.js",
+    "static/js/2.756b725d.chunk.js.map": "/pesto-exercise-starter/static/js/2.756b725d.chunk.js.map",
+    "index.html": "/pesto-exercise-starter/index.html",
+    "precache-manifest.31fc1b5553cd6522797e21c8fff42574.js": "/pesto-exercise-starter/precache-manifest.31fc1b5553cd6522797e21c8fff42574.js",
+    "service-worker.js": "/pesto-exercise-starter/service-worker.js",
+    "static/css/main.29fdddb7.chunk.css.map": "/pesto-exercise-starter/static/css/main.29fdddb7.chunk.css.map",
+    "static/js/2.756b725d.chunk.js.LICENSE.txt": "/pesto-exercise-starter/static/js/2.756b725d.chunk.js.LICENSE.txt",
+    "static/media/smb_coin.wav": "/pesto-exercise-starter/static/media/smb_coin.a3676413.wav",
+    "static/media/smb_mariodie.wav": "/pesto-exercise-starter/static/media/smb_mariodie.9f02f1b1.wav"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.38210067.js",
+    "static/js/2.756b725d.chunk.js",
+    "static/css/main.29fdddb7.chunk.css",
+    "static/js/main.6876d9c4.chunk.js"
+  ]
+}
