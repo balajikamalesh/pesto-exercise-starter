@@ -1,13 +1,16 @@
-import React from 'react';
+import React , {useState, useEffect} from 'react';
 import './App.css';
 import Snake from './components/snake';
 import Bait from './components/bait';
+import Obstacles1 from './components/obstable';
+import Obstacles2 from './components/obstable';
+import Obstacles3 from './components/obstable';
 import Score from './components/score';
 import DifficultyLevel from './components/difficultylevel';
 import Instructions from './components/instructions';
 import Gameover from './components/gameover';
-import point from './sound/smb_coin.wav';
-import gameOver from './sound/smb_mariodie.wav';
+import pointSound from './sound/smb_coin.wav';
+import gameOverSound from './sound/smb_mariodie.wav';
 
 
 const getRandomPositionForBait = () => {
@@ -17,150 +20,162 @@ const getRandomPositionForBait = () => {
   return [x, y];
 }
 
-class App extends React.Component {
+const getObstaclesPositions = () => {
+  let min = 6, max = 94;
+  let x = Math.floor((Math.random() * (min + (max - min + 1))) / 2) * 2;
+  let y = Math.floor((Math.random() * (min + (max - min + 1))) / 2) * 2;
+  return Math.random() > 0.5 ? [[x,y],[x+1,y],[x+2,y],[x+3,y],[x+4,y],[x+5,y]] : 
+                               [[x,y],[x,y+1],[x,y+2],[x,y+3],[x,y+4],[x,y+5]]; 
+}
+
+function App() {
   
-  state = {
-    bait: getRandomPositionForBait(),
-    speed: 0,
-    direction: 'R',
-    isGameOver: false,
-    gameOverReason: '',
-    isNear: false,
-    score: 0,
-    highScore: 0,
-    snake: [...Array(5).keys()].map(x => [0, 2*x])
-  }
+  const [bait, setBait] = useState(getRandomPositionForBait()); 
+  const [obstacles1, setObstacles1] = useState(getObstaclesPositions());
+  const [obstacles2, setObstacles2] = useState(getObstaclesPositions());
+  const [obstacles3, setObstacles3] = useState(getObstaclesPositions());
+  const [speed, setSpeed] = useState(2);
+  const [direction, setDirection] = useState('R');
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [gameOverReason, setGameOverReason] = useState('');
+  const [isNear, setIsNear] = useState(false);
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [snake, setSnake] = useState([...Array(5).keys()].map(x => [0, 2*x]));
 
-  componentDidMount() {
-    document.onkeydown = this.onKeyDown;
-  }
+  useEffect(() => {
+    document.onkeydown = onKeyDown;
+    if(speed !== 0 && !isGameOver)
+      window.myTimer = setInterval(moveSnake, (200/speed));
 
-  componentDidUpdate(){
-    let headOfSnake = this.state.snake[this.state.snake.length - 1];
-    if((headOfSnake[0] > 98 || headOfSnake[1] > 98 || headOfSnake[0] < 0 || headOfSnake[1] < 0) && !this.state.isGameOver){
-      this.gameOver('Boundary Collision!!!');
+    let headOfSnake = snake[snake.length - 1];
+    if((headOfSnake[0] > 98 || headOfSnake[1] > 98 || headOfSnake[0] < 0 || headOfSnake[1] < 0) && !isGameOver){
+      gameOver('Boundary Collision!!!');
     }
+
+    return () => clearInterval(window.myTimer);  
+  },[direction, isGameOver, speed, moveSnake, onKeyDown, snake])
+
+  function onKeyDown(event){
+    if(event.keyCode === 38 && direction !== 'D')
+      setDirection('U');  
+    if(event.keyCode === 39 && direction !== 'L')
+      setDirection('R');
+    if(event.keyCode === 40 && direction !== 'U')
+      setDirection('D');  
+    if(event.keyCode === 37 && direction !== 'R') 
+      setDirection('L'); 
   }
 
-  onKeyDown = (event) => {
-    if(event.keyCode === 38 && this.state.direction !== 'D')
-      this.setState({direction: 'U'});  
-    if(event.keyCode === 39 && this.state.direction !== 'L')
-      this.setState({direction: 'R'});
-    if(event.keyCode === 40 && this.state.direction !== 'U')
-      this.setState({direction: 'D'});  
-    if(event.keyCode === 37 && this.state.direction !== 'R') 
-      this.setState({direction: 'L'});
-    
-  }
-
-  moveSnake = () => {
-    let snakeDots = [...this.state.snake];
-    let headOfSnake = snakeDots[snakeDots.length - 1];
-    if(this.state.direction === 'R')
+  function moveSnake() {
+    let snakeArray = [...snake];
+    let headOfSnake = snakeArray[snakeArray.length - 1];
+    if(direction === 'R')
       headOfSnake = [headOfSnake[0] ,headOfSnake[1] + 2];
-    else if(this.state.direction === 'L')
+    else if(direction === 'L')
       headOfSnake = [headOfSnake[0] ,headOfSnake[1] - 2];
-    else if(this.state.direction === 'D')
+    else if(direction === 'D')
       headOfSnake = [headOfSnake[0] + 2,headOfSnake[1]];
     else
       headOfSnake = [headOfSnake[0] - 2,headOfSnake[1]];
 
       //self collision
-      if(JSON.stringify(snakeDots).indexOf(JSON.stringify(headOfSnake)) >= 0){
-        this.gameOver('Self Collision!!!');
+      if(JSON.stringify(snakeArray).indexOf(JSON.stringify(headOfSnake)) >= 0){
+        gameOver('Self Collision!!!');
       }
 
-    snakeDots.push(headOfSnake);
-    snakeDots.shift();
+      if(JSON.stringify(obstacles1).indexOf(JSON.stringify(headOfSnake)) >= 0
+         || JSON.stringify(obstacles2).indexOf(JSON.stringify(headOfSnake)) >= 0
+         || JSON.stringify(obstacles3).indexOf(JSON.stringify(headOfSnake)) >= 0){
+        gameOver('Obstacle Collision!!!');
+      }
 
-    if((Math.abs(this.state.bait[0] - headOfSnake[0]) < 15) 
-        && (Math.abs(this.state.bait[1] - headOfSnake[1]) < 15)) {
-      this.setState({isNear: true})
+      snakeArray.push(headOfSnake);
+      snakeArray.shift();
+
+    if((Math.abs(bait[0] - headOfSnake[0]) < 15) 
+        && (Math.abs(bait[1] - headOfSnake[1]) < 15)) {
+      setIsNear(true)
     } else {
-      this.setState({isNear: false})
+      setIsNear(false)
     }
 
     //found
-    if(this.state.bait[0] === headOfSnake[0] && this.state.bait[1] === headOfSnake[1]){
+    if(bait[0] === headOfSnake[0] && bait[1] === headOfSnake[1]) {
       document.getElementById('pointSound').play();
-      snakeDots.push(headOfSnake);
-      this.setState({snake: snakeDots,
-                     bait: getRandomPositionForBait(),
-                     score: this.state.score + 1,
-                     highScore: Math.max(this.state.highScore, this.state.score + 1)})
+      snakeArray.push(headOfSnake);
+      setSnake(snakeArray);
+      setBait(getRandomPositionForBait());
+      setScore(score + 1);
+      setHighScore(Math.max(highScore, score + 1))
     }
 
-    this.setState({snake: snakeDots});
+    setSnake(snakeArray);
   }
 
-  setSpeed = (difficulty) => {
+  function setSpeedofSnake(difficulty) {
       switch(difficulty){
         case 'easy':
-          this.setState({speed: 1});
+          setSpeed(1);
           break;
         case 'medium':
-          this.setState({speed: 2});
+          setSpeed(2);
           break;
         case 'hard':
-          this.setState({speed: 3});
+          setSpeed(3);
           break;
         case 'pesto':
-          this.setState({speed: 6});
+          setSpeed(6);
           break;
         default:
           break;
       }
   }
 
-  start = () => {
-    if(this.state.speed !== 0 && !this.state.isGameOver)
-      window.myTimer = setInterval(this.moveSnake, (200/this.state.speed));
-  }
-
-  gameOver = (reason) => {
+  function gameOver(reason) {
     clearInterval(window.myTimer);
-    this.setState({isGameOver: true,gameOverReason: reason});
+    setIsGameOver(true);
+    setGameOverReason(reason)
     let gameOverSound = document.getElementById('gameOverSound');
     gameOverSound.volume = 0.5;
     gameOverSound.play();
   } 
 
-  reset = () => {
-    clearInterval(window.myTimer);
-    this.setState({
-      bait: getRandomPositionForBait(),
-      snake: [...Array(5).keys()].map(x => [0, 2*x]),
-      direction: 'R',
-      isGameOver: false,
-      isNear: false,
-      score: 0
-    })
+  function reset(){
+    setBait(getRandomPositionForBait());
+    setSnake([...Array(5).keys()].map(x => [0, 2*x]));
+    setDirection('R');
+    setIsGameOver(false);
+    setIsNear(false);
+    setScore(0);
+    setObstacles1(getObstaclesPositions());
+    setObstacles2(getObstaclesPositions());
+    setObstacles3(getObstaclesPositions());
   }
 
-  render() {
     return (
       <div>
-        <audio id="pointSound" src={point} preload="auto"></audio>
-        <audio id="gameOverSound" src={gameOver} preload="auto"></audio>
+        <audio id="pointSound" src={pointSound} preload="auto"></audio>
+        <audio id="gameOverSound" src={gameOverSound} preload="auto"></audio>
         <h1>SNAKE MANIA</h1>
         <div className="game-layout">
-          <Snake snakeSquares={this.state.snake} />
-          <Bait dot={this.state.bait} isNear={this.state.isNear}/> 
+          <Snake snakeSquares={snake} />
+          <Obstacles1 positions={obstacles1}/>
+          <Obstacles2 positions={obstacles2}/>
+          <Obstacles3 positions={obstacles3}/>
+          <Bait dot={bait} isNear={isNear}/> 
         </div>
         <div className="information">
-          <Score currentScore={this.state.score} highScore={this.state.highScore} />
-          <DifficultyLevel handler={this.setSpeed}/>
-          <div style={{marginLeft: '120px'}}>
-            <button onClick={() => this.start()}>Start</button>
-            <button onClick={() => this.reset()}>Reset</button>
+          <Score currentScore={score} highScore={highScore} />
+          <DifficultyLevel handler={setSpeedofSnake}/>
+          <div style={{marginLeft: '200px'}}>
+            <button onClick={() => reset()}>Reset</button>
           </div>
           <Instructions />
-          <Gameover isGameOver={this.state.isGameOver} reason={this.state.gameOverReason}/>
+          <Gameover isGameOver={isGameOver} reason={gameOverReason}/>
         </div>
       </div>
     );
-  }
 }
 
 export default App;

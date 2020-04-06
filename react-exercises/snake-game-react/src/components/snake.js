@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default (props) => {
+  
   return (
     <div>
       {props.snakeSquares.map((dot, i) => {
