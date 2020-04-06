@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pesto-exercise-starter/precache-manifest.cf08656a474df60dcc5765c4e35a335b.js"
+  "/pesto-exercise-starter/precache-manifest.96a2499f32d386530648b18f4d6bd250.js"
 );
 
 self.addEventListener('message', (event) => {
