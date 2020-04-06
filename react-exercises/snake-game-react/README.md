@@ -2,7 +2,7 @@
 
 # Submission
 
-Game URL: _____
+Game URL: https://balajikamalesh.github.io/pesto-exercise-starter/
 
 Mockup URL: https://balsamiq.cloud/s2733qb/pidl1ya
 
