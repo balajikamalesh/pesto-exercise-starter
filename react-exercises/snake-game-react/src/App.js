@@ -5,6 +5,8 @@ import Bait from './components/bait';
 import Obstacles1 from './components/obstable';
 import Obstacles2 from './components/obstable';
 import Obstacles3 from './components/obstable';
+import Obstacles4 from './components/obstable';
+import Obstacles5 from './components/obstable';
 import Score from './components/score';
 import DifficultyLevel from './components/difficultylevel';
 import Instructions from './components/instructions';
@@ -34,13 +36,15 @@ function App() {
   const [obstacles1, setObstacles1] = useState(getObstaclesPositions());
   const [obstacles2, setObstacles2] = useState(getObstaclesPositions());
   const [obstacles3, setObstacles3] = useState(getObstaclesPositions());
+  const [obstacles4, setObstacles4] = useState(getObstaclesPositions());
+  const [obstacles5, setObstacles5] = useState(getObstaclesPositions());
   const [speed, setSpeed] = useState(2);
   const [direction, setDirection] = useState('R');
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameOverReason, setGameOverReason] = useState('');
   const [isNear, setIsNear] = useState(false);
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  const [highScore, setHighScore] = useState({'easy': 0,'medium': 0,'hard': 0,'PESTO': 0});
   const [snake, setSnake] = useState([...Array(5).keys()].map(x => [0, 2*x]));
 
   useEffect(() => {
@@ -86,7 +90,9 @@ function App() {
 
       if(JSON.stringify(obstacles1).indexOf(JSON.stringify(headOfSnake)) >= 0
          || JSON.stringify(obstacles2).indexOf(JSON.stringify(headOfSnake)) >= 0
-         || JSON.stringify(obstacles3).indexOf(JSON.stringify(headOfSnake)) >= 0){
+         || JSON.stringify(obstacles3).indexOf(JSON.stringify(headOfSnake)) >= 0
+         || JSON.stringify(obstacles4).indexOf(JSON.stringify(headOfSnake)) >= 0
+         || JSON.stringify(obstacles5).indexOf(JSON.stringify(headOfSnake)) >= 0){
         gameOver('Obstacle Collision!!!');
       }
 
@@ -107,7 +113,14 @@ function App() {
       setSnake(snakeArray);
       setBait(getRandomPositionForBait());
       setScore(score + 1);
-      setHighScore(Math.max(highScore, score + 1))
+      if(speed === 1)
+        setHighScore({...highScore , easy: Math.max(highScore['easy'], score + 1)});
+      else if(speed === 2)
+        setHighScore({...highScore , medium: Math.max(highScore['medium'], score + 1)});
+      else if(speed === 3)
+        setHighScore({...highScore , hard: Math.max(highScore['hard'], score + 1)});
+      else
+        setHighScore({...highScore , PESTO: Math.max(highScore['PESTO'], score + 1)});
     }
 
     setSnake(snakeArray);
@@ -151,6 +164,8 @@ function App() {
     setObstacles1(getObstaclesPositions());
     setObstacles2(getObstaclesPositions());
     setObstacles3(getObstaclesPositions());
+    setObstacles4(getObstaclesPositions());
+    setObstacles5(getObstaclesPositions());
   }
 
     return (
@@ -163,10 +178,12 @@ function App() {
           <Obstacles1 positions={obstacles1}/>
           <Obstacles2 positions={obstacles2}/>
           <Obstacles3 positions={obstacles3}/>
+          <Obstacles4 positions={obstacles4}/>
+          <Obstacles5 positions={obstacles5}/>
           <Bait dot={bait} isNear={isNear}/> 
         </div>
         <div className="information">
-          <Score currentScore={score} highScore={highScore} />
+          <Score currentScore={score} highScore={highScore} speed={speed}/>
           <DifficultyLevel handler={setSpeedofSnake}/>
           <div style={{marginLeft: '200px'}}>
             <button onClick={() => reset()}>Reset</button>
