@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "50cb6c2bdd205cb06f289e00dc23a734",
+    "revision": "719cd89756ded61fe8bff24d476978b8",
     "url": "/pesto-exercise-starter/index.html"
   },
   {
-    "revision": "d34c24f84715843c11d8",
-    "url": "/pesto-exercise-starter/static/css/main.29fdddb7.chunk.css"
+    "revision": "e7a1b214faa23b7ecd92",
+    "url": "/pesto-exercise-starter/static/css/main.82f8ad99.chunk.css"
   },
   {
-    "revision": "a25204b7c8a044107907",
-    "url": "/pesto-exercise-starter/static/js/2.756b725d.chunk.js"
+    "revision": "58799a8bcc9a88e71433",
+    "url": "/pesto-exercise-starter/static/js/2.247c56a8.chunk.js"
   },
   {
     "revision": "e88a3e95b5364d46e95b35ae8c0dc27d",
-    "url": "/pesto-exercise-starter/static/js/2.756b725d.chunk.js.LICENSE.txt"
+    "url": "/pesto-exercise-starter/static/js/2.247c56a8.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "d34c24f84715843c11d8",
-    "url": "/pesto-exercise-starter/static/js/main.6876d9c4.chunk.js"
+    "revision": "e7a1b214faa23b7ecd92",
+    "url": "/pesto-exercise-starter/static/js/main.ff9b9937.chunk.js"
   },
   {
     "revision": "3704eefe8fe85cdfd140",
