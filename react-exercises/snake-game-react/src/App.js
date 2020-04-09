@@ -48,9 +48,16 @@ function App() {
   const [snake, setSnake] = useState([...Array(5).keys()].map(x => [0, 2*x]));
 
   useEffect(() => {
-    document.onkeydown = onKeyDown;
-    if(speed !== 0 && !isGameOver)
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop; 
+    let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    window.onscroll = function() { 
+      window.scrollTo(scrollLeft, scrollTop); 
+    }; 
+
+    document.onkeydown = debounce(onKeyDown, 200/speed);
+    if(speed !== 0 && !isGameOver){
       window.myTimer = setInterval(moveSnake, (200/speed));
+    }
 
     let headOfSnake = snake[snake.length - 1];
     if((headOfSnake[0] > 98 || headOfSnake[1] > 98 || headOfSnake[0] < 0 || headOfSnake[1] < 0) && !isGameOver){
@@ -60,10 +67,19 @@ function App() {
     return () => clearInterval(window.myTimer);  
   },[direction, isGameOver, speed, moveSnake, onKeyDown, snake])
 
-  function onKeyDown(event){
-    if([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1) {
-      event.preventDefault();
-    } 
+  function debounce(func, delay) {
+    var timer = null;
+    return function () {
+      var context = this, 
+      args = arguments;
+      clearTimeout(timer);
+        timer = setTimeout(function () {
+        func.apply(context, args);
+      }, delay);
+    };
+  }
+
+  function onKeyDown(event) {
     if(event.keyCode === 38 && direction !== 'D')
       setDirection('U');  
     if(event.keyCode === 39 && direction !== 'L')
@@ -77,56 +93,56 @@ function App() {
   function moveSnake() {
     let snakeArray = [...snake];
     let headOfSnake = snakeArray[snakeArray.length - 1];
-    if(direction === 'R')
-      headOfSnake = [headOfSnake[0] ,headOfSnake[1] + 2];
-    else if(direction === 'L')
-      headOfSnake = [headOfSnake[0] ,headOfSnake[1] - 2];
-    else if(direction === 'D')
-      headOfSnake = [headOfSnake[0] + 2,headOfSnake[1]];
-    else
-      headOfSnake = [headOfSnake[0] - 2,headOfSnake[1]];
-
-      //self collision
-      if(JSON.stringify(snakeArray).indexOf(JSON.stringify(headOfSnake)) >= 0){
-        gameOver('Self Collision!!!');
-      }
-
-      if(JSON.stringify(obstacles1).indexOf(JSON.stringify(headOfSnake)) >= 0
-         || JSON.stringify(obstacles2).indexOf(JSON.stringify(headOfSnake)) >= 0
-         || JSON.stringify(obstacles3).indexOf(JSON.stringify(headOfSnake)) >= 0
-         || JSON.stringify(obstacles4).indexOf(JSON.stringify(headOfSnake)) >= 0
-         || JSON.stringify(obstacles5).indexOf(JSON.stringify(headOfSnake)) >= 0){
-        gameOver('Obstacle Collision!!!');
-      }
-
-      snakeArray.push(headOfSnake);
-      snakeArray.shift();
-
-    if((Math.abs(bait[0] - headOfSnake[0]) < 15) 
-        && (Math.abs(bait[1] - headOfSnake[1]) < 15)) {
-      setIsNear(true)
-    } else {
-      setIsNear(false)
-    }
-
-    //found
-    if(bait[0] === headOfSnake[0] && bait[1] === headOfSnake[1]) {
-      document.getElementById('pointSound').play();
-      snakeArray.push(headOfSnake);
-      setSnake(snakeArray);
-      setBait(getRandomPositionForBait());
-      setScore(score + 1);
-      if(speed === 1)
-        setHighScore({...highScore , easy: Math.max(highScore['easy'], score + 1)});
-      else if(speed === 2)
-        setHighScore({...highScore , medium: Math.max(highScore['medium'], score + 1)});
-      else if(speed === 3)
-        setHighScore({...highScore , hard: Math.max(highScore['hard'], score + 1)});
+      if(direction === 'R')
+        headOfSnake = [headOfSnake[0] ,headOfSnake[1] + 2];
+      else if(direction === 'L')
+        headOfSnake = [headOfSnake[0] ,headOfSnake[1] - 2];
+      else if(direction === 'D')
+        headOfSnake = [headOfSnake[0] + 2,headOfSnake[1]];
       else
-        setHighScore({...highScore , PESTO: Math.max(highScore['PESTO'], score + 1)});
-    }
+        headOfSnake = [headOfSnake[0] - 2,headOfSnake[1]];
 
-    setSnake(snakeArray);
+        //self collision
+        if(JSON.stringify(snakeArray).indexOf(JSON.stringify(headOfSnake)) >= 0){
+            gameOver('Self Collision!!!');
+        }
+
+        if(JSON.stringify(obstacles1).indexOf(JSON.stringify(headOfSnake)) >= 0
+          || JSON.stringify(obstacles2).indexOf(JSON.stringify(headOfSnake)) >= 0
+          || JSON.stringify(obstacles3).indexOf(JSON.stringify(headOfSnake)) >= 0
+          || JSON.stringify(obstacles4).indexOf(JSON.stringify(headOfSnake)) >= 0
+          || JSON.stringify(obstacles5).indexOf(JSON.stringify(headOfSnake)) >= 0){
+          gameOver('Obstacle Collision!!!');
+        }
+
+        snakeArray.push(headOfSnake);
+        snakeArray.shift();
+
+      if((Math.abs(bait[0] - headOfSnake[0]) < 15) 
+          && (Math.abs(bait[1] - headOfSnake[1]) < 15)) {
+        setIsNear(true)
+      } else {
+        setIsNear(false)
+      }
+
+      //found
+      if(bait[0] === headOfSnake[0] && bait[1] === headOfSnake[1]) {
+        document.getElementById('pointSound').play();
+        snakeArray.push(headOfSnake);
+        setSnake(snakeArray);
+        setBait(getRandomPositionForBait());
+        setScore(score + 1);
+        if(speed === 1)
+          setHighScore({...highScore , easy: Math.max(highScore['easy'], score + 1)});
+        else if(speed === 2)
+          setHighScore({...highScore , medium: Math.max(highScore['medium'], score + 1)});
+        else if(speed === 3)
+          setHighScore({...highScore , hard: Math.max(highScore['hard'], score + 1)});
+        else
+          setHighScore({...highScore , PESTO: Math.max(highScore['PESTO'], score + 1)});
+      }
+
+      setSnake(snakeArray);
   }
 
   function setSpeedofSnake(difficulty) {
