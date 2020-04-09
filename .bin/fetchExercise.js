@@ -25,11 +25,11 @@ function setUpUngracefulExit(exitCode = 1) {
   process.exitCode = exitCode;
 }
 
-async function writeFileTo(folderPath, filename, fileContent) {
+async function writeFileTo(folderPath, filename, arrayBuffer) {
   await mkdirp(folderPath);
 
   const filePath = Path.join(folderPath, filename);
-  await fs.writeFile(filePath, fileContent, 'utf-8');
+  await fs.writeFile(filePath, new Uint8Array(arrayBuffer));
 }
 
 function getQuestionType(questionName) {
@@ -63,10 +63,18 @@ async function main() {
   if (await repoHasUpdates()) {
     info('Updating the repo ...');
     await cmdGet('npm run update-repo');
+    info(`Please fetch the question again. Thanks.`);
+    return;
   }
 
   info('Enter one or more space-separated question names.');
   const questionsString = await input('Questions? ');
+  if (questionsString === '') {
+    error('The question cannot be an empty string. Please enter a name.\n');
+    setUpUngracefulExit()
+    return;
+  }
+
   const questions = questionsString.split(' ');
 
   const invalidQuestionNames = questions.filter(
@@ -97,7 +105,7 @@ async function main() {
       console.log(bgYellowBright(red(`Skipping ${question}`)));
       console.log('\n');
     } else {
-      for (const { name: filename, file: fileContent, path } of allFiles) {
+      for (const { name: filename, fileArrayBuffer: fileContent, path } of allFiles) {
         const questionFolderPath = initial(path.split('/')).join('/');
         await writeFileTo(questionFolderPath, filename, fileContent);
         success(`Downloaded file ${filename} at ${questionFolderPath}`);
